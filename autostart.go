@@ -6,6 +6,8 @@ type App struct {
 	Name string
 	// The command to execute, followed by its arguments.
 	Exec []string
+        //working directory
+        WorkDir string
 	// The app name.
 	DisplayName string
 	// The app icon.

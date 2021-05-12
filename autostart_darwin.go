@@ -20,8 +20,10 @@ const jobTemplate = `<?xml version="1.0" encoding="UTF-8"?>
       </array>
     <key>RunAtLoad</key>
     <true/>
-    <key>AbandonProcessGroup</key>
-    <true/>
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    <key>KeepAlive</key>
+    <false/>
   </dict>
 </plist>`
 

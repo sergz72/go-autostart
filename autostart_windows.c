@@ -6,7 +6,7 @@
 #include <objbase.h>
 #include <shlobj.h>
 
-uint64_t CreateShortcut(char *shortcutA, char *path, char *args) {
+uint64_t CreateShortcut(char *shortcutA, char *path, char *args, char *workdir) {
 	IShellLink*   pISL;
 	IPersistFile* pIPF;
 	HRESULT       hr;
@@ -33,15 +33,20 @@ uint64_t CreateShortcut(char *shortcutA, char *path, char *args) {
 		return hr+0x03000000;
 	}
 
-	// Save the shortcut
-	hr = pISL->lpVtbl->QueryInterface(pISL, &IID_IPersistFile, (void**)&pIPF);
+	hr = pISL->lpVtbl->SetWorkingDirectory(pISL, workdir);
 	if (!SUCCEEDED(hr)) {
 		return hr+0x04000000;
 	}
 
-	hr = pIPF->lpVtbl->Save(pIPF, shortcutW, FALSE);
+	// Save the shortcut
+	hr = pISL->lpVtbl->QueryInterface(pISL, &IID_IPersistFile, (void**)&pIPF);
 	if (!SUCCEEDED(hr)) {
 		return hr+0x05000000;
+	}
+
+	hr = pIPF->lpVtbl->Save(pIPF, shortcutW, FALSE);
+	if (!SUCCEEDED(hr)) {
+		return hr+0x06000000;
 	}
 
 	pIPF->lpVtbl->Release(pIPF);

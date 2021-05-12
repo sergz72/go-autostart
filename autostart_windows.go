@@ -6,7 +6,7 @@ package autostart
 #include <stdint.h>
 #include <windows.h>
 
-uint64_t CreateShortcut(char *shortcutA, char *path, char *args);
+uint64_t CreateShortcut(char *shortcutA, char *path, char *args, char *workDir);
 */
 import "C"
 
@@ -40,7 +40,7 @@ func (a *App) Enable() error {
 	if err := os.MkdirAll(startupDir, 0777); err != nil {
 		return err
 	}
-	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args))
+	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args), C.CString(a.WorkDir))
 	if res != 0 {
 		return errors.New(fmt.Sprintf("autostart: cannot create shortcut '%s' error code: 0x%.8x", a.path(), res))
 	}
