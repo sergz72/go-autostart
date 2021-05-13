@@ -18,14 +18,16 @@ import (
 	"strings"
 )
 
-var startupDir string
-
-func init() {
-	startupDir = filepath.Join(os.Getenv("USERPROFILE"), "AppData", "Roaming", "Microsoft", "Windows", "Start Menu", "Programs", "Startup")
+func (a *App) Init() {
+    if a.AllUsers {
+        a.startupDir = filepath.Join(os.Getenv("ProgramData"), "Microsoft", "Windows", "Start Menu", "Programs", "StartUp")
+    } else {
+        a.startupDir = filepath.Join(os.Getenv("USERPROFILE"), "AppData", "Roaming", "Microsoft", "Windows", "Start Menu", "Programs", "Startup")
+    }
 }
 
 func (a *App) path() string {
-	return filepath.Join(startupDir, a.Name+".lnk")
+	return filepath.Join(a.startupDir, a.Name+".lnk")
 }
 
 func (a *App) IsEnabled() bool {
@@ -37,7 +39,7 @@ func (a *App) Enable() error {
 	path := a.Exec[0]
 	args := strings.Join(a.Exec[1:], " ")
 
-	if err := os.MkdirAll(startupDir, 0777); err != nil {
+	if err := os.MkdirAll(a.startupDir, 0777); err != nil {
 		return err
 	}
 	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args), C.CString(a.WorkDir))

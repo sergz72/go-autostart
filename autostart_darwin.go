@@ -27,14 +27,16 @@ const jobTemplate = `<?xml version="1.0" encoding="UTF-8"?>
   </dict>
 </plist>`
 
-var launchDir string
-
-func init() {
-	launchDir = filepath.Join(os.Getenv("HOME"), "Library", "LaunchAgents")
+func (a *App) Init() {
+    if a.AllUsers {
+        a.startupDir = filepath.Join("/", "Library", "LaunchAgents")
+    } else {
+        a.startupDir = filepath.Join(os.Getenv("HOME"), "Library", "LaunchAgents")
+    }
 }
 
 func (a *App) path() string {
-	return filepath.Join(launchDir, a.Name+".plist")
+	return filepath.Join(a.startupDir, a.Name+".plist")
 }
 
 // IsEnabled Check is app enabled startup.
@@ -47,7 +49,7 @@ func (a *App) IsEnabled() bool {
 func (a *App) Enable() error {
 	t := template.Must(template.New("job").Parse(jobTemplate))
 
-	if err := os.MkdirAll(launchDir, 0777); err != nil {
+	if err := os.MkdirAll(a.startupDir, 0777); err != nil {
 		return err
 	}
 	f, err := os.Create(a.path())
@@ -65,6 +67,5 @@ func (a *App) Enable() error {
 
 // Disable this app on startup.
 func (a *App) Disable() error {
-
 	return os.Remove(a.path())
 }

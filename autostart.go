@@ -12,4 +12,8 @@ type App struct {
 	DisplayName string
 	// The app icon.
 	Icon string
+        // for all users
+        AllUsers bool
+        // startup file folder
+        startupDir string
 }
