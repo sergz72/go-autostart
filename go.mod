@@ -1,4 +1,4 @@
-module github.com/serg72/go-autostart
+module github.com/sergz72/go-autostart
 
 go 1.16
 
