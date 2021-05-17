@@ -5,6 +5,7 @@ import (
 	"path/filepath"
         ole "github.com/go-ole/go-ole"
         "github.com/go-ole/go-ole/oleutil"
+        "strings"
 )
 
 func (a *App) Init() {
