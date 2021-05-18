@@ -17,19 +17,17 @@ Icon={{.Icon}}{{end}}
 X-GNOME-Autostart-enabled=true
 `
 
-var autostartDir string
-
-func init() {
+func (a *App) Init() {
 	if os.Getenv("XDG_CONFIG_HOME") != "" {
-		autostartDir = os.Getenv("XDG_CONFIG_HOME")
+		a.startupDir = os.Getenv("XDG_CONFIG_HOME")
 	} else {
-		autostartDir = filepath.Join(os.Getenv("HOME"), ".config")
+		a.startupDir = filepath.Join(os.Getenv("HOME"), ".config")
 	}
-	autostartDir = filepath.Join(autostartDir, "autostart")
+	a.startupDir = filepath.Join(a.startupDir, "autostart")
 }
 
 func (a *App) path() string {
-	return filepath.Join(autostartDir, a.Name+".desktop")
+	return filepath.Join(a.startupDir, a.Name+".desktop")
 }
 
 // Check if the app is enabled on startup.
@@ -51,7 +49,7 @@ func (a *app) Exec() string {
 func (a *App) Enable() error {
 	t := template.Must(template.New("desktop").Parse(desktopTemplate))
 
-	if err := os.MkdirAll(autostartDir, 0777); err != nil {
+	if err := os.MkdirAll(a.startupDir, 0777); err != nil {
 		return err
 	}
 	f, err := os.Create(a.path())
